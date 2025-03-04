@@ -7,7 +7,7 @@ class Window(QWidget):
         super().__init__()
 
         self.setWindowTitle("Spotify Video Sync")
-        self.setWindowIcon(QIcon("resources/logo.png"))
+        self.setWindowIcon(QIcon("resources/logo_large.png"))
 
 
     def center_window(self):
