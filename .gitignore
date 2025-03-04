@@ -14,3 +14,12 @@ obj/
 # Sensitive config files
 appsettings.json
 
+# Conda environment files if you have them
+.conda/
+
+# OS-specific / Editor junk
+.DS_Store
+Thumbs.db
+
+# PyQt UI compilation results
+*.pyc
