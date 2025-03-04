@@ -23,3 +23,6 @@ Thumbs.db
 
 # PyQt UI compilation results
 *.pyc
+
+# Spotify Client Secrets
+src/.env
