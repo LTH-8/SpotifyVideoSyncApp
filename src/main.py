@@ -1,22 +1,31 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtGui import QIcon
+from PyQt6.uic import loadUi
 
-#opening window class
-class Window(QWidget):
+# Window class
+class Window(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        #rename opening window title and set app logo
+        # Load the UI file
+        loadUi("src/ui/main_window.ui", self)
+
+        # Ensure central widget is set (needed for QMainWindow UIs)
+        self.setCentralWidget(self.centralwidget)
+
+        # Rename window title and set app logo
         self.setWindowTitle("Spotify Video Sync")
         self.setWindowIcon(QIcon("resources/logo_large.png"))
 
-    #function to resize and center the opening window
-    def center_window(self):
-        screen = QApplication.primaryScreen()
-        self.move(self.frameGeometry().moveCenter(screen.availableGeometry.center()))
+        # Connect button to function
+        self.fetchButton.clicked.connect(self.fetch_spotify_data)
 
+    # Function for button click
+    def fetch_spotify_data(self):
+        print("Fetching Spotify data . . .")
 
+# Start application
 app = QApplication(sys.argv)
 window = Window()
 window.show()
