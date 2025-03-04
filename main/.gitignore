@@ -1,5 +1,16 @@
+# Build artifacts
 bin/
 obj/
+*.exe
+*.dll
+
+# User-specific files
 *.user
-*.log
+*.suo
+
+# Visual Studio Code settings
+.vscode/
+
+# Sensitive config files
 appsettings.json
+
