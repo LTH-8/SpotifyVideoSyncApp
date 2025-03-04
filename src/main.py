@@ -43,12 +43,6 @@ class SpotifyAuthenticateServer:
     def run(self):
         threading.Thread(target=self.app.run, kwargs={"host": "127.0.0.1", "port": 8888}).start()
 
-    def spotify_login(self):
-        global spotify_token
-        auth_url = self.sp_oauth.get_authorize_url()
-        self.login_prompt = LoginPrompt(auth_url)
-        self.login_prompt.show()
-
 
 class LoginPrompt(QWidget):
     def __init__(self, auth_url, parent=None):
@@ -75,6 +69,11 @@ class LoginPrompt(QWidget):
     def open_login_window(self):
         self.spotify_window = SpotifyLoginWindow(self.auth_url)
         self.spotify_window.show()
+
+        while not spotify_token:
+            pass
+
+        print("Spotify login successful!")
         self.close()
 
 class SpotifyLoginWindow(QMainWindow):
@@ -102,12 +101,13 @@ class Window(QMainWindow):
 
         # Load the UI file, Center window, Rename window, Set window logo
         loadUi("src/ui/main_window.ui", self)
-        self.setCentralWidget(self.centralwidget)
         self.setWindowTitle("Spotify Video Sync")
         self.setWindowIcon(QIcon("resources/logo_large.png"))
 
         # Connect button to function
         self.fetchButton.clicked.connect(self.fetch_spotify_data)
+        self.loginButton.clicked.connect(self.spotify_login)
+        self.cancelButton.clicked.connect(self.close)
 
         self.sp_oauth = SpotifyOAuth(
             client_id=SPOTIFY_CLIENT_ID,
@@ -115,6 +115,16 @@ class Window(QMainWindow):
             redirect_uri=SPOTIFY_REDIRECT_URI,
             scope="user-read-currently-playing"
         )
+
+    def spotify_login(self):
+        global spotify_token
+        auth_url = self.sp_oauth.get_authorize_url()
+
+        self.login_prompt = LoginPrompt(auth_url)
+        self.login_prompt.show()
+
+        while not spotify_token:
+            pass
 
     def fetch_spotify_data(self):
         try:
