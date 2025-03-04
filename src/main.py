@@ -1,10 +1,12 @@
 import sys
 import os
+import spotipy
 
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtGui import QIcon
 from PyQt6.uic import loadUi
 from dotenv import load_dotenv
+from spotipy.oauth2 import SpotifyOAuth
 
 load_dotenv
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
@@ -16,18 +18,21 @@ class Window(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Load the UI file
+        # Load the UI file, Center window, Rename window, Set window logo
         loadUi("src/ui/main_window.ui", self)
-
-        # Ensure central widget is set (needed for QMainWindow UIs)
         self.setCentralWidget(self.centralwidget)
-
-        # Rename window title and set app logo
         self.setWindowTitle("Spotify Video Sync")
         self.setWindowIcon(QIcon("resources/logo_large.png"))
 
         # Connect button to function
         self.fetchButton.clicked.connect(self.fetch_spotify_data)
+
+        self.sp_oauth = SpotifyOAuth(
+            client_id=os.getenv("SPOTIFY_CLIENT_ID"),
+            client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
+            redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
+            scope="user-read-currently-playing"
+        )
 
     # Function for button click
     def fetch_spotify_data(self):

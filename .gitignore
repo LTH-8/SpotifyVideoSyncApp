@@ -25,4 +25,4 @@ Thumbs.db
 *.pyc
 
 # Spotify Client Secrets
-src/spotifyClient.env
+src/.env
