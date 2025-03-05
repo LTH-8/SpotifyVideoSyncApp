@@ -3,12 +3,14 @@ import os
 import spotipy
 import threading
 import webbrowser
+import requests
+import time
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.uic import loadUi
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtCore import QUrl
+from PyQt6.QtCore import QUrl, Qt, QTimer
 
 from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyOAuth
@@ -104,11 +106,6 @@ class Window(QMainWindow):
         self.setWindowTitle("Spotify Video Sync")
         self.setWindowIcon(QIcon("resources/logo_large.png"))
 
-        # Connect button to function
-        self.fetchButton.clicked.connect(self.fetch_spotify_data)
-        self.loginButton.clicked.connect(self.spotify_login)
-        self.cancelButton.clicked.connect(self.close)
-
         self.sp_oauth = SpotifyOAuth(
             client_id=SPOTIFY_CLIENT_ID,
             client_secret=SPOTIFY_CLIENT_SECRET,
@@ -116,29 +113,73 @@ class Window(QMainWindow):
             scope="user-read-currently-playing"
         )
 
+        self.current_track = None
+        self.running = True
+
+        self.thread = threading.Thread(target=self.track_song_changes, daemon=True)
+        self.thread.start()
+
     def spotify_login(self):
         global spotify_token
         auth_url = self.sp_oauth.get_authorize_url()
-
         self.login_prompt = LoginPrompt(auth_url)
         self.login_prompt.show()
 
-        while not spotify_token:
-            pass
+        self.timer = Qt.QTimer()
+        self.timer.timeout.connect(self.check_spotify_token)
+        self.timer.start(1000)
 
-    def fetch_spotify_data(self):
-        try:
-            track = spotipy.Spotify(auth_manager=self.sp_oauth).current_user_playing_track()
+    def check_spotify_token(self):
+        # Check for successful spotify login
+        global spotify_token
+        if spotify_token:
+            print("Spotify Login Successful!")
+            self.timer.stop()
 
-            if track and track.get('item'):
-                print(f"Now playing: {track['item']['name']} - {track['item']['artists'][0]['name']}")
-            else:
-                print("No song currently playing")    
+    def track_song_changes(self):
+        # Continuously check for song updates on a background thread
+        while self.running:
+            try:
+                track = spotipy.Spotify(auth_manager=self.sp_oauth).current_user_playing_track()
 
-        except spotipy.exceptions.SpotifyException as e:
-            print(f"Spotify API error: {e}")
-        except Exception as e:
-            print(f"Error fetching track: {e}")
+                if track and track.get('item'):
+                    track_name = track['item']['name']
+                    artist_name = track['item']['artists'][0]['name']
+                    album_cover_url = track['item']['album']['images'][0]['url']
+
+                    new_track = f"{track_name} - {artist_name}"
+
+                    if new_track != self.current_track:
+                        self.current_track = new_track
+                        print(f"Now Playing: {self.current_track}")
+
+                        self.update_ui(track_name, artist_name, album_cover_url)
+                        
+                else:
+                    self.songLabel.setText("No song currently playing")   
+                    self.artistLabel.setText("") 
+
+            except spotipy.exceptions.SpotifyException as e:
+                print(f"Spotify API error: {e}")
+            except Exception as e:
+                print(f"Error fetching track: {e}")
+
+                if "429" in str(e):
+                    time.sleep(30)
+                else:
+                    time.sleep(2)
+            
+            time.sleep(2)
+
+    def update_ui(self, track_name, artist_name, album_cover_url):
+        # Updates the song and artist labels
+        self.songTitleLabel.setText(track_name)
+        self.artistLabel.setText(artist_name)
+
+        if hasattr(self, "albumArtLabel"):
+            pixmap = QPixmap()
+            pixmap.loadFromData(requests.get(album_cover_url).content)
+            self.albumArtLabel.setPixmap(pixmap.scaled(120, 120, Qt.AspectRatioMode.KeepAspectRatio))     
 
 # Start application
 app = QApplication(sys.argv)

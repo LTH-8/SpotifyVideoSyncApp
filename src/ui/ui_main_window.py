@@ -21,15 +21,18 @@ class Ui_MainWindow(object):
         self.historyList = QtWidgets.QListWidget(parent=self.centralwidget)
         self.historyList.setGeometry(QtCore.QRect(1170, 10, 271, 821))
         self.historyList.setObjectName("historyList")
-        self.songLabel = QtWidgets.QLabel(parent=self.centralwidget)
-        self.songLabel.setGeometry(QtCore.QRect(610, 10, 401, 51))
-        self.songLabel.setObjectName("songLabel")
+        self.songTitleLabel = QtWidgets.QLabel(parent=self.centralwidget)
+        self.songTitleLabel.setGeometry(QtCore.QRect(90, 730, 161, 41))
+        self.songTitleLabel.setObjectName("songTitleLabel")
         self.loginButton = QtWidgets.QPushButton(parent=self.centralwidget)
         self.loginButton.setGeometry(QtCore.QRect(500, 640, 301, 91))
         self.loginButton.setObjectName("loginButton")
         self.cancelButton = QtWidgets.QPushButton(parent=self.centralwidget)
         self.cancelButton.setGeometry(QtCore.QRect(610, 740, 81, 21))
         self.cancelButton.setObjectName("cancelButton")
+        self.artistLabel = QtWidgets.QLabel(parent=self.centralwidget)
+        self.artistLabel.setGeometry(QtCore.QRect(90, 760, 111, 41))
+        self.artistLabel.setObjectName("artistLabel")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1448, 21))
@@ -46,9 +49,10 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.fetchButton.setText(_translate("MainWindow", "Fetch Spotify Data"))
-        self.songLabel.setText(_translate("MainWindow", "Now Playing: None"))
+        self.songTitleLabel.setText(_translate("MainWindow", "Song"))
         self.loginButton.setText(_translate("MainWindow", "Login"))
         self.cancelButton.setText(_translate("MainWindow", "Cancel"))
+        self.artistLabel.setText(_translate("MainWindow", "Artist"))
 
 
 if __name__ == "__main__":
