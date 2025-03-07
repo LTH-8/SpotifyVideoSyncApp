@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>2560</width>
-    <height>1440</height>
+    <height>1412</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -76,10 +76,21 @@
      </rect>
     </property>
    </widget>
+   <widget class="QWidget" name="videoBackgroundView" native="true">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>2561</width>
+      <height>1151</height>
+     </rect>
+    </property>
+   </widget>
    <zorder>bottomBarWidget</zorder>
    <zorder>songTitleLabel</zorder>
    <zorder>artistLabel</zorder>
    <zorder>albumArtLabel</zorder>
+   <zorder>videoBackgroundView</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

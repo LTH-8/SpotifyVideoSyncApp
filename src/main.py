@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBo
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.uic import loadUi
 from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtWebEngineCore import QWebEngineSettings, QWebEngineProfile
 from PyQt6.QtCore import QUrl, Qt, QTimer
 
 from dotenv import load_dotenv
