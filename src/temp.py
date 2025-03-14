@@ -56,7 +56,7 @@ def get_youtube_video_url(track, artist):
         for item in items:
             try:
                 video_id = item["id"]["videoId"]
-                print("Found candidate video ID:", video_id)
+                print("Found video ID:", video_id)
                 video_check_url = "https://www.googleapis.com/youtube/v3/videos"
                 video_params = {"part": "status", "id": video_id, "key": YOUTUBE_API_KEY}
                 video_response = requests.get(video_check_url, params=video_params)

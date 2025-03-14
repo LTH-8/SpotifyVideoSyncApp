@@ -7,11 +7,10 @@
     <script>
       var player;
       function onYouTubeIframeAPIReady() {
-        // Hard-coded videoId here for demo. The Python code will call loadVideo() to override it.
         player = new YT.Player('player', {
           height: '100%',
           width: '100%',
-          videoId: 'VIDEO_ID',
+          videoId: 'VIDEO_ID', 
           playerVars: {
             'autoplay': 1,
             'mute': 1,
@@ -25,22 +24,39 @@
       }
 
       function onPlayerReady(event) {
-        // Player is ready
+        // Initially try to set a high quality.
+        event.target.setPlaybackQuality('hd1080');
+        // Start enforcing the highest quality.
+        setInterval(enforceHighestQuality, 1000);
       }
 
       function onPlayerError(event) {
         console.error("YouTube Player Error:", event.data);
-        // If this is an embed restriction or other blocking error
         if (event.data === 2 || event.data === 101 || event.data === 150) {
-          // Let Python know by setting a global variable
           window.videoError = event.data;
         }
       }
 
-      // Called from Python to load a new video ID
       function loadVideo(videoId) {
         if (player && typeof player.loadVideoById === 'function') {
-          player.loadVideoById(videoId);
+          player.loadVideoById({
+            videoId: videoId,
+            startSeconds: 0,
+            suggestedQuality: 'hd1080' // This is advisory.
+          });
+        }
+      }
+
+      // New function to enforce the highest quality.
+      function enforceHighestQuality() {
+        if (player && typeof player.getAvailableQualityLevels === 'function') {
+          var qualities = player.getAvailableQualityLevels();
+          if (qualities && qualities.length > 0) {
+            var highest = qualities[0]; // Assume highest quality is first.
+            if (player.getPlaybackQuality() !== highest) {
+              player.setPlaybackQuality(highest);
+            }
+          }
         }
       }
     </script>
