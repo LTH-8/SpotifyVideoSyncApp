@@ -19,7 +19,7 @@
      <rect>
       <x>160</x>
       <y>1250</y>
-      <width>331</width>
+      <width>1000</width>
       <height>41</height>
      </rect>
     </property>
@@ -40,7 +40,7 @@
      <rect>
       <x>160</x>
       <y>1280</y>
-      <width>331</width>
+      <width>1000</width>
       <height>41</height>
      </rect>
     </property>
@@ -76,13 +76,13 @@
      </rect>
     </property>
    </widget>
-   <widget class="QWidget" name="videoBackgroundView" native="true">
+    <widget class="QWebEngineView" name="videoBackgroundView" native="true">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
       <width>2561</width>
-      <height>1151</height>
+      <height>1200</height>
      </rect>
     </property>
    </widget>

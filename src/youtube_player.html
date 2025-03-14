@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>YouTube Player</title>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+      var player;
+      function onYouTubeIframeAPIReady() {
+        // Hard-coded videoId here for demo. The Python code will call loadVideo() to override it.
+        player = new YT.Player('player', {
+          height: '100%',
+          width: '100%',
+          videoId: 'VIDEO_ID',
+          playerVars: {
+            'autoplay': 1,
+            'mute': 1,
+            'enablejsapi': 1
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError
+          }
+        });
+      }
+
+      function onPlayerReady(event) {
+        // Player is ready
+      }
+
+      function onPlayerError(event) {
+        console.error("YouTube Player Error:", event.data);
+        // If this is an embed restriction or other blocking error
+        if (event.data === 2 || event.data === 101 || event.data === 150) {
+          // Let Python know by setting a global variable
+          window.videoError = event.data;
+        }
+      }
+
+      // Called from Python to load a new video ID
+      function loadVideo(videoId) {
+        if (player && typeof player.loadVideoById === 'function') {
+          player.loadVideoById(videoId);
+        }
+      }
+    </script>
+  </head>
+  <body style="margin:0; padding:0;">
+    <div id="player"></div>
+  </body>
+</html>
