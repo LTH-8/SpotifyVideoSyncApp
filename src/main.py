@@ -38,7 +38,7 @@ def get_youtube_video_url(track, artist):
          "part": "snippet",
          "q": query,
          "key": YOUTUBE_API_KEY,
-         "maxResults": 3,  # Try up to 3 results
+         "maxResults": 5,  # Try up to 5 results
          "type": "video",
          "videoEmbeddable": "true",
          "videoSyndicated": "true"
@@ -56,7 +56,7 @@ def get_youtube_video_url(track, artist):
         for item in items:
             try:
                 video_id = item["id"]["videoId"]
-                print("Found video ID:", video_id)
+                print("Found candidate video ID:", video_id)
                 video_check_url = "https://www.googleapis.com/youtube/v3/videos"
                 video_params = {"part": "status", "id": video_id, "key": YOUTUBE_API_KEY}
                 video_response = requests.get(video_check_url, params=video_params)
@@ -253,7 +253,7 @@ class Window(QMainWindow):
             if video_url:
                 self.pending_video_url = video_url
                 # Extract the plain YouTube video ID from the URL query parameter.
-                # Our URL format is: https://cdpn.io/pen/debug/oNPzxKo?v=VIDEO_ID&...
+                # URL format is: https://cdpn.io/pen/debug/oNPzxKo?v=VIDEO_ID&...
                 parts = video_url.split("v=")
                 if len(parts) > 1:
                     self.last_video_id = parts[1].split("&")[0]
@@ -270,7 +270,7 @@ class Window(QMainWindow):
             self.pending_video_url = None
 
     def check_for_js_errors(self):
-        # Check if our HTML set window.videoError
+        # Check if HTML set window.videoError
         js_code = "window.videoError || null;"
         self.videoBackgroundView.page().runJavaScript(js_code, self.handle_js_error)
 
